@@ -1,6 +1,9 @@
+import java.net.URI
+
 plugins {
     kotlin("jvm") version "1.9.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
+    id("maven-publish")
 }
 
 group = "hu.kszi2"
@@ -23,4 +26,23 @@ tasks.test {
 
 kotlin {
     jvmToolchain(11)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("libmoscht") {
+            from(components["kotlin"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = URI("https://maven.pkg.github.com/kszi2/libmoscht")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
